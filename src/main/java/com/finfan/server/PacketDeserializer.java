@@ -6,9 +6,11 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.nio.charset.StandardCharsets;
 
-public interface PacketDeserializer {
+public interface PacketDeserializer<Response extends PacketData> {
 
     <T extends PacketData> T deserialize(ChannelHandlerContext ctx, ByteBuf buffer);
+
+    void serializeToResponse(Response data, ByteBuf out);
 
     int getPacketId();
 
@@ -19,4 +21,9 @@ public interface PacketDeserializer {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    default void writeString(ByteBuf buffer, String value) {
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        buffer.writeInt(bytes.length);
+        buffer.writeBytes(bytes);
+    }
 }

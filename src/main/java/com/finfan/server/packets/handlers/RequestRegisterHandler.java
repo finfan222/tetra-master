@@ -1,22 +1,26 @@
-package com.finfan.server.packets.requests.handlers;
+package com.finfan.server.packets.handlers;
 
+import com.finfan.server.PacketDeserializer;
 import com.finfan.server.entity.AccountEntity;
 import com.finfan.server.enums.Direction;
 import com.finfan.server.enums.ReceiveRegisterResponse;
-import com.finfan.server.packets.responses.ReceiveRegister;
 import com.finfan.server.packets.requests.RequestRegister;
+import com.finfan.server.packets.responses.ResponseRegister;
 import com.finfan.server.service.AccountService;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RequestRegisterHandler {
+public class RequestRegisterHandler implements PacketDeserializer<ResponseRegister> {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AccountService accountService;
@@ -34,9 +38,8 @@ public class RequestRegisterHandler {
     @Value("${game.pswd-max-length}")
     private int pswdMaxLength;
 
-    @EventListener
-    public void receive(RequestRegister requestRegister) {
-        ReceiveRegister registerResponse = new ReceiveRegister();
+    public ResponseRegister handle(RequestRegister requestRegister) {
+        ResponseRegister registerResponse = new ResponseRegister();
         ReceiveRegisterResponse validateNameResult = validateName(requestRegister.getName());
         if (validateNameResult != null) {
             registerResponse.setResponse(validateNameResult);
@@ -53,7 +56,7 @@ public class RequestRegisterHandler {
             accountService.createMaster(requestRegister);
         }
 
-        applicationEventPublisher.publishEvent(registerResponse);
+        return registerResponse;
     }
 
     private boolean validateTalent(int masterTalent) {
@@ -99,4 +102,40 @@ public class RequestRegisterHandler {
         }
         return spentPoints <= baseCardPoints;
     }
+
+    @SuppressWarnings("unchecked")
+    public RequestRegister deserialize(ChannelHandlerContext ctx, ByteBuf buffer) {
+        RequestRegister in = new RequestRegister();
+        in.setName(readString(buffer));
+        in.setPassword(readString(buffer));
+        in.setIpAddress(readString(buffer));
+        in.setPortrait(buffer.readInt());
+        in.setTalentId(buffer.readInt());
+
+        // Чтение Dictionary<int, int>
+        int dictSize = buffer.readInt();
+        Map<Long, Integer> cards = new HashMap<>();
+        for (int i = 0; i < dictSize; i++) {
+            cards.put(buffer.readLong(), buffer.readInt());
+        }
+        in.setBaseCards(cards);
+        return in;
+    }
+
+    @Override
+    public void serializeToResponse(ResponseRegister data, ByteBuf out) {
+        ByteBuf tempBuf = Unpooled.buffer();
+        tempBuf.writeInt(data.getPacketId());
+        tempBuf.writeInt(data.getResponse().ordinal());
+        int length = tempBuf.writerIndex();
+
+        out.writeInt(length);
+        out.writeBytes(tempBuf);
+    }
+
+    @Override
+    public int getPacketId() {
+        return RequestRegister.PACKET_ID;
+    }
+
 }

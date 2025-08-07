@@ -21,7 +21,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
         int packetId = buffer.readInt();
-        System.out.println("Получен пакет: " + Integer.toHexString(packetId));
+        System.out.println("Decode: " + packetId);
         Object packet = deserializers.get(packetId).deserialize(ctx, buffer);// кейсы с обработками пакет не найден и т.д..
         out.add(packet); // передаем дальше по пайплайну
     }

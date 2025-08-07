@@ -1,10 +1,9 @@
 package com.finfan.server.config;// NettyServerConfig.java
 
+import com.finfan.server.PacketDeserializer;
+import com.finfan.server.channels.PacketDecoder;
 import com.finfan.server.channels.PacketEncoder;
 import com.finfan.server.channels.PacketHandlerFactory;
-import com.finfan.server.channels.PacketDecoder;
-import com.finfan.server.PacketDeserializer;
-import com.finfan.server.PacketSerializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -33,11 +32,6 @@ public class NettyServerConfig {
     @Bean
     public Map<Integer, PacketDeserializer> deserializers(List<PacketDeserializer> list) {
         return list.stream().collect(Collectors.toMap(PacketDeserializer::getPacketId, Function.identity()));
-    }
-
-    @Bean
-    public Map<Integer, PacketSerializer> serializers(List<PacketSerializer> list) {
-        return list.stream().collect(Collectors.toMap(PacketSerializer::getPacketId, Function.identity()));
     }
 
     @Bean

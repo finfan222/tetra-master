@@ -2,13 +2,12 @@ package com.finfan.server;
 
 import com.finfan.server.packets.PacketData;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.nio.charset.StandardCharsets;
 
 public interface PacketSerializer {
 
-    ByteBuf serialize(PacketData data);
+    void serialize(PacketData data, ByteBuf buffer);
 
     int getPacketId();
 
