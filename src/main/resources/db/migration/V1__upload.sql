@@ -8,8 +8,10 @@ CREATE TABLE "public"."accounts" (
   "password" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "last_ip_address" varchar(18) COLLATE "pg_catalog"."default" NOT NULL,
   "last_access" timestamp(6) DEFAULT CURRENT_TIMESTAMP,
+  "email" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "permission" varchar(18) COLLATE "pg_catalog"."default" NOT NULL DEFAULT 'PLAYER'::character varying,
-  "premium" bool DEFAULT false
+  "premium" bool DEFAULT false,
+  "online" bool DEFAULT false
 )
 ;
 

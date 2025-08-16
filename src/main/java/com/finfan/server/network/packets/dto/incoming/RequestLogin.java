@@ -1,6 +1,5 @@
-package com.finfan.server.packets.requests;
+package com.finfan.server.network.packets.dto.incoming;
 
-import com.finfan.server.packets.PacketData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
-public class RequestLogin extends PacketData {
+public class RequestLogin extends AbstractIncomePacket {
 
     public static final int PACKET_ID = 0x01;
 

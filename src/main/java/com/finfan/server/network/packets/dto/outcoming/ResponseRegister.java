@@ -1,8 +1,6 @@
-package com.finfan.server.packets.responses;
+package com.finfan.server.network.packets.dto.outcoming;
 
 import com.finfan.server.enums.ReceiveRegisterResponse;
-import com.finfan.server.packets.PacketData;
-import com.finfan.server.packets.requests.RequestRegister;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ResponseRegister extends PacketData {
+public class ResponseRegister extends AbstractOutcomePacket {
 
     public static final int PACKET_ID = 0x04;
 
@@ -18,10 +16,6 @@ public class ResponseRegister extends PacketData {
 
     public ResponseRegister() {
         this.packetId = PACKET_ID;
-    }
-
-    public int getRequestPacketId() {
-        return RequestRegister.PACKET_ID;
     }
 
 }

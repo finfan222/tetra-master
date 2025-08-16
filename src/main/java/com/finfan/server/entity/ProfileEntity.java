@@ -2,28 +2,27 @@ package com.finfan.server.entity;
 
 import com.finfan.server.entity.dictionaries.TalentEntity;
 import com.finfan.server.enums.CollectorRank;
+import com.finfan.server.enums.PlayerStatus;
 import com.finfan.server.enums.Portrait;
 import com.finfan.server.enums.Rank;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.ToString.Exclude;
 
 import java.util.List;
 
@@ -53,6 +52,7 @@ public class ProfileEntity {
     @ManyToOne
     @JoinColumn(name = "talent_id", referencedColumnName = "id")
     private TalentEntity talent;
+    @ToString.Exclude
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CardEntity> cards;
     @ToString.Exclude
@@ -60,4 +60,6 @@ public class ProfileEntity {
     @JoinColumn(name = "account_id")
     private AccountEntity account;
 
+    @Transient
+    private PlayerStatus status = PlayerStatus.FREE;
 }

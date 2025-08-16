@@ -1,4 +1,4 @@
-package com.finfan.server.packets;
+package com.finfan.server.network.packets.dto;
 
 import lombok.Data;
 
@@ -15,7 +15,4 @@ public abstract class PacketData implements Serializable {
         this.packetId = 0x00;
     }
 
-    public int getRequestPacketId() {
-        return -1;
-    }
 }

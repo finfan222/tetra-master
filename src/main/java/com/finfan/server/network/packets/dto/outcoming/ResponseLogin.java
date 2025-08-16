@@ -1,8 +1,6 @@
-package com.finfan.server.packets.responses;
+package com.finfan.server.network.packets.dto.outcoming;
 
 import com.finfan.server.enums.ReceiveLoginResponse;
-import com.finfan.server.packets.PacketData;
-import com.finfan.server.packets.requests.RequestLogin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,18 +10,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @AllArgsConstructor
-public class ResponseLogin extends PacketData {
+public class ResponseLogin extends AbstractOutcomePacket {
 
     public static final int PACKET_ID = 0x02;
 
     private ReceiveLoginResponse response;
+    private long id;
 
     public ResponseLogin() {
         packetId = PACKET_ID;
     }
 
-    @Override
-    public int getRequestPacketId() {
-        return RequestLogin.PACKET_ID;
-    }
 }

@@ -8,9 +8,9 @@ public enum Rank {
     NOVICE(0),
     SEEKER(500),
     WAYFARER(1000),
-    GUARDIAN(2500),
-    VETERAN(5600),
-    LEGEND(7400),
+    GUARDIAN(2000),
+    VETERAN(4000),
+    LEGEND(8000),
     MASTER(9999);
 
     private final int requiredExp;

@@ -1,6 +1,5 @@
-package com.finfan.server.packets.requests;
+package com.finfan.server.network.packets.dto.incoming;
 
-import com.finfan.server.packets.PacketData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.util.Map;
 @Data
 @Builder
 @AllArgsConstructor
-public class RequestRegister extends PacketData {
+public class RequestRegister extends AbstractIncomePacket {
 
     public static final int PACKET_ID = 0x03;
 
@@ -22,6 +21,7 @@ public class RequestRegister extends PacketData {
     private int portrait;
     private int talentId;
     private Map<Long, Integer> baseCards;
+    private String email;
 
     public RequestRegister() {
         packetId = PACKET_ID;

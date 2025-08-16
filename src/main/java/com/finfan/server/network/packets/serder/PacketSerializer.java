@@ -1,15 +1,13 @@
-package com.finfan.server;
+package com.finfan.server.network.packets.serder;
 
-import com.finfan.server.packets.PacketData;
+import com.finfan.server.network.packets.dto.outcoming.AbstractOutcomePacket;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
 
-public interface PacketSerializer {
+public interface PacketSerializer<T extends AbstractOutcomePacket> {
 
-    void serialize(PacketData data, ByteBuf buffer);
-
-    int getPacketId();
+    void serialize(T data, ByteBuf buffer);
 
     default void writeString(ByteBuf buffer, String value) {
         buffer.writeInt(value.length());

@@ -37,6 +37,8 @@ public class AccountEntity {
     private String lastIpAddress;
     private LocalDateTime lastAccess;
     private Boolean premium;
+    private String email;
+    private Boolean online;
     @ToString.Exclude
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ProfileEntity profile;
