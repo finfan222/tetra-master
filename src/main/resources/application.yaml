@@ -31,3 +31,5 @@ game:
   base-card-points-price: 5
   base-card-points: 100
   base-gil: 500
+  chat-max-message-length: 60
+  chat-max-history-messages: 100

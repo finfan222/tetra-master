@@ -4,6 +4,7 @@ import com.finfan.server.events.network.GameSessionActive;
 import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.packets.dto.outcoming.AbstractOutcomePacket;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GameSessionRegistry {
@@ -23,11 +25,13 @@ public class GameSessionRegistry {
     @EventListener
     protected void onGameSessionActive(GameSessionActive event) {
         gameSessions.put(event.getGameSession(), VALUE);
+        log.debug("Клиент подключён: {} (total: {})", event.getGameSession().getChannel().id(), onlineCount());
     }
 
     @EventListener
     protected void onGameSessionInactive(GameSessionInactive event) {
         gameSessions.remove(event.getGameSession());
+        log.debug("Клиент отключён: {} (total: {})", event.getGameSession().getChannel().id(), onlineCount());
     }
 
     public List<GameSession> getGameSessions() {

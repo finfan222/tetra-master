@@ -7,10 +7,12 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Slf4j
 @Component
 @Sharable
 @RequiredArgsConstructor
@@ -20,12 +22,12 @@ public class PacketEncoder extends MessageToByteEncoder<AbstractOutcomePacket> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, AbstractOutcomePacket msg, ByteBuf out) throws Exception {
-        System.out.println("Encode: " + msg.getPacketId());
         PacketSerializer packetSerializer = serializers.get(msg.getClass());
         if (packetSerializer == null) {
-            return; //TODO
+            throw new RuntimeException("Сериализатор не найден: " + msg.getPacketId());
         }
 
         packetSerializer.serialize(msg, out);
+        log.debug("[→] Outcome ID[{}] DATA[{}]", msg.getPacketId(), msg);
     }
 }

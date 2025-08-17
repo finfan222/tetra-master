@@ -2,6 +2,7 @@ package com.finfan.server.service;
 
 import com.finfan.server.entity.AccountEntity;
 import com.finfan.server.entity.ProfileEntity;
+import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.GameSession;
 import com.finfan.server.network.GameSessionRegistry;
 import com.finfan.server.network.packets.dto.incoming.RequestPlayerInfo;
@@ -46,6 +47,7 @@ public class LobbyService {
             responsePlayerInfo.setGil(profile.getGil());
             responsePlayerInfo.setWin(profile.getWins());
             responsePlayerInfo.setLoss(profile.getLosses());
+            responsePlayerInfo.setPortrait(profile.getPortrait());
             gameSession.sendPacket(responsePlayerInfo);
         }
     }
@@ -53,5 +55,10 @@ public class LobbyService {
     @EventListener
     public void onUpdatePlayerInfo(RequestPlayerInfo requestPlayerInfo) {
         updatePlayerInfo(requestPlayerInfo.getPlayerId(), requestPlayerInfo.getGameSession());
+    }
+
+    @EventListener
+    protected void onGameSessionInactive(GameSessionInactive event) {
+        sendPlayerList();
     }
 }

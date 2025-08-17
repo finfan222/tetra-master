@@ -17,5 +17,6 @@ public class ResponsePlayerInfoSerializer implements PacketSerializer<ResponsePl
         buffer.writeLong(data.getGil());
         buffer.writeInt(data.getWin());
         buffer.writeInt(data.getLoss());
+        buffer.writeInt(data.getPortrait().ordinal());
     }
 }

@@ -8,6 +8,7 @@ import com.finfan.server.enums.Permission;
 import com.finfan.server.enums.Portrait;
 import com.finfan.server.enums.Rank;
 import com.finfan.server.enums.ReceiveRegisterResponse;
+import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.packets.dto.incoming.RequestRegister;
 import com.finfan.server.network.packets.dto.outcoming.ResponseRegister;
 import com.finfan.server.repository.AccountRepository;
@@ -194,5 +195,10 @@ public class AccountService {
 
     private boolean validateEmail(String email) {
         return !email.isEmpty() && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    @EventListener
+    protected void onGameSessionInactive(GameSessionInactive event) {
+        updateOnline(event.getGameSession().getAccount().getId(), false);
     }
 }

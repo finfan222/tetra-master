@@ -31,9 +31,10 @@ public class LoginService {
                 if (!inputPassword.equals(serverPassword)) {
                     responseLogin.setResponse(ReceiveLoginResponse.INCORRECT_ACCOUNT_NAME_OR_PASSWORD);
                 } else {
-                    accountService.updateOnline(account.getId(), true);
                     responseLogin.setResponse(ReceiveLoginResponse.OK);
                     responseLogin.setId(account.getId());
+                    gameSession.setAccount(account);
+                    accountService.updateOnline(account.getId(), true);
                 }
             }
         }

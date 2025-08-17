@@ -1,5 +1,6 @@
 package com.finfan.server.network.packets.dto.outcoming;
 
+import com.finfan.server.enums.Portrait;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.EqualsAndHashCode;
  * player.player_gil = temp_buffer.read_long()<br>
  * player.player_win = temp_buffer.read_int()<br>
  * player.player_loss = temp_buffer.read_int()<br>
+ * player.player_portrait = temp_buffer.read_int()<br>
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -29,6 +31,7 @@ public class ResponsePlayerInfo extends AbstractOutcomePacket {
     private long gil;
     private int win;
     private int loss;
+    private Portrait portrait;
 
     public ResponsePlayerInfo() {
         packetId = PACKET_ID;

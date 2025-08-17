@@ -23,9 +23,13 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
         int packetId = buffer.readInt();
-        log.debug("Decode: {}", packetId);
-        Object packet = deserializers.get(packetId).deserialize(ctx, buffer);// кейсы с обработками пакет не найден и т.д..
-        out.add(packet); // передаем дальше по пайплайну
+        PacketDeserializer packetDeserializer = deserializers.get(packetId);
+        if (packetDeserializer == null) {
+            throw new RuntimeException("Десериализатор не найден для: " + packetId);
+        }
+
+        log.debug("[←] Income: ID[{}]({}) LEN[{}]", packetId, packetDeserializer.getClass().getSimpleName(), buffer.readableBytes());
+        out.add(packetDeserializer.deserialize(ctx, buffer));
     }
 
 }

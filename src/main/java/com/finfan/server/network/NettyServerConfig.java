@@ -8,6 +8,7 @@ import com.finfan.server.network.packets.serder.PacketSerializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -63,13 +64,19 @@ public class NettyServerConfig {
                     protected void initChannel(SocketChannel socketChannel) {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         // buffer validate handler
+                        //pipeline.addLast(new ReadTimeoutHandler(30000, TimeUnit.MILLISECONDS));
                         pipeline.addLast(new LengthFieldBasedFrameDecoder(ByteOrder.BIG_ENDIAN, Short.MAX_VALUE, 0, 4, 0, 4, false));
                         pipeline.addLast(new LengthFieldBasedFrameEncoder(Short.MAX_VALUE, 4));
                         pipeline.addLast(packetDecoder);
                         pipeline.addLast(packetEncoder);
                         pipeline.addLast(gameSessionFactory.create());
                     }
-                });
+                })
+                .childOption(ChannelOption.SO_BACKLOG, 100)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                //.childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+        ;
         return serverBootstrap;
     }
 
