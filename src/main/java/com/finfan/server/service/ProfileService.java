@@ -36,4 +36,24 @@ public class ProfileService {
                 .toList();
     }
 
+    @Transactional
+    public boolean reduceGil(ProfileEntity profile, int count) {
+        Long myGil = profile.getGil();
+        if (myGil == null || myGil < count) {
+            return false;
+        }
+
+        long result = myGil - count;
+        profile.setGil(result);
+        save(profile);
+        return true;
+    }
+
+    @Transactional
+    public void addGil(ProfileEntity profile, int count) {
+        Long myGil = profile.getGil();
+        long result = myGil + count;
+        profile.setGil(result);
+        save(profile);
+    }
 }

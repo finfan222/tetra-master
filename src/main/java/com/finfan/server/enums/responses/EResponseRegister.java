@@ -1,6 +1,6 @@
-package com.finfan.server.enums;
+package com.finfan.server.enums.responses;
 
-public enum ReceiveRegisterResponse {
+public enum EResponseRegister {
     OK,
     INCORRECT_NAME_LENGTH,
     ACCOUNT_ALREADY_EXISTS,

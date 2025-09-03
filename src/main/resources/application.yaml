@@ -33,3 +33,11 @@ game:
   base-gil: 500
   chat-max-message-length: 60
   chat-max-history-messages: 100
+  shop:
+    generate-card-deck-cron: 0 0 12 * * 0 #“At 12:00 on Sunday.”
+    card-generate-count: 8
+    card-generate-arrow-chances: 7,12,20,33,56,64,77,100
+    #card-price-for-atk-def: 100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600
+    #card-price-for-atk-arrows: 100,200,300,500,800,1300,2100,3400
+    #card-price-for-atk-type-x: 800
+    #card-price-for-atk-type-a: 1800

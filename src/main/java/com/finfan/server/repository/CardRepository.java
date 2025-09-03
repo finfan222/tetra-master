@@ -11,10 +11,16 @@ import java.util.List;
 @Repository
 public interface CardRepository extends JpaRepository<CardEntity, Long> {
 
-    @Query("SELECT count(*) FROM CardEntity card WHERE card.id = :cardId")
-    int getCount(@Param("cardId") int cardId);
+    @Query("SELECT count(*) FROM CardEntity card WHERE card.profile.id = :profileId AND card.template.id = :cardTemplateId")
+    int getCountByProfileIdAndTemplateId(@Param("profileId") Long profileId, @Param("cardTemplateId") Long cardTemplateId);
 
-    @Query("SELECT e FROM CardEntity e WHERE profile.id = :id")
-    List<CardEntity> findAllByProfileId(@Param("id") Long id);
+    @Query("SELECT card FROM CardEntity card WHERE card.profile.id = :profileId")
+    List<CardEntity> findAllByProfileId(@Param("profileId") Long profileId);
+
+    @Query("SELECT card FROM CardEntity card WHERE card.profile.id = :profileId AND card.template.id = :cardId")
+    List<CardEntity> findAllByProfileIdAndCardId(@Param("profileId") Long profileId, @Param("cardId") Long cardId);
+
+    @Query("SELECT card FROM CardEntity card WHERE card.profile.id = :profileId AND card.id in (:ids)")
+    List<CardEntity> findAllByProfileIdAndWhereInIds(Long profileId, @Param("id") List<Long> ids);
 
 }

@@ -28,6 +28,7 @@ public class PacketEncoder extends MessageToByteEncoder<AbstractOutcomePacket> {
         }
 
         packetSerializer.serialize(msg, out);
-        log.debug("[→] Outcome ID[{}] DATA[{}]", msg.getPacketId(), msg);
+
+        log.debug("[←] Outcome ID[{}] LEN[{}] DATA[{}]", msg.getPacketId(), out.writerIndex(), msg);
     }
 }

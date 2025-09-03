@@ -7,12 +7,13 @@ import com.finfan.server.enums.Direction;
 import com.finfan.server.enums.Permission;
 import com.finfan.server.enums.Portrait;
 import com.finfan.server.enums.Rank;
-import com.finfan.server.enums.ReceiveRegisterResponse;
+import com.finfan.server.enums.responses.EResponseRegister;
 import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.packets.dto.incoming.RequestRegister;
 import com.finfan.server.network.packets.dto.outcoming.ResponseRegister;
 import com.finfan.server.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class AccountService {
     private final CardService cardService;
     private final CardTemplateService cardTemplateService;
     private final ProfileService profileService;
+    private final ObjectProvider<LobbyService> lobbyService;
 
     @Value("${game.base-card-points-price}")
     private int baseCardPointPrice;
@@ -65,17 +67,14 @@ public class AccountService {
         return accountRepository.findAll(PageRequest.of(page, size)).stream().toList();
     }
 
-    public List<AccountEntity> getAccounts(Boolean online, int page, int size) {
+    public synchronized List<AccountEntity> getAccounts(Boolean online, int page, int size) {
         return accountRepository.findAllByOnline(online, PageRequest.of(page, size)).stream().toList();
     }
 
     @Transactional
-    public void updateOnline(Long id, Boolean value) {
-        AccountEntity account = accountRepository.findById(id).orElse(null);
-        if (account != null) {
-            account.setOnline(value);
-            accountRepository.save(account);
-        }
+    public void updateOnline(AccountEntity account, Boolean value) {
+        account.setOnline(value);
+        accountRepository.save(account);
     }
 
     @Transactional
@@ -128,21 +127,21 @@ public class AccountService {
     @EventListener
     public void onRequestRegister(RequestRegister requestRegister) {
         ResponseRegister registerResponse = new ResponseRegister();
-        ReceiveRegisterResponse validateNameResult = validateName(requestRegister.getName());
+        EResponseRegister validateNameResult = validateName(requestRegister.getName());
         if (validateNameResult != null) {
             registerResponse.setResponse(validateNameResult);
         } else if (!validatePassword(requestRegister.getPassword())) {
-            registerResponse.setResponse(ReceiveRegisterResponse.INCORRECT_PASSWORD);
+            registerResponse.setResponse(EResponseRegister.INCORRECT_PASSWORD);
         } else if (!validateTalent(requestRegister.getTalentId())) {
-            registerResponse.setResponse(ReceiveRegisterResponse.TALENT_NOT_CHOOSE);
+            registerResponse.setResponse(EResponseRegister.TALENT_NOT_CHOOSE);
         } else if (!validateCards(requestRegister.getBaseCards())) {
-            registerResponse.setResponse(ReceiveRegisterResponse.INCORRECT_CARD_DIRECTIONS);
+            registerResponse.setResponse(EResponseRegister.INCORRECT_CARD_DIRECTIONS);
         } else if (!validateSpentPoints(requestRegister.getBaseCards())) {
-            registerResponse.setResponse(ReceiveRegisterResponse.INCORRECT_SPENT_POINTS);
+            registerResponse.setResponse(EResponseRegister.INCORRECT_SPENT_POINTS);
         } else if (!validateEmail(requestRegister.getEmail())) {
-            registerResponse.setResponse(ReceiveRegisterResponse.INCORRECT_EMAIL);
+            registerResponse.setResponse(EResponseRegister.INCORRECT_EMAIL);
         } else {
-            registerResponse.setResponse(ReceiveRegisterResponse.OK);
+            registerResponse.setResponse(EResponseRegister.OK);
             createMaster(requestRegister);
         }
 
@@ -153,15 +152,15 @@ public class AccountService {
         return masterTalent > 0;
     }
 
-    private ReceiveRegisterResponse validateName(String accountName) {
+    private EResponseRegister validateName(String accountName) {
         int length = accountName.length();
         if (length < nameMinLength || length > nameMaxLength) {
-            return ReceiveRegisterResponse.INCORRECT_NAME_LENGTH;
+            return EResponseRegister.INCORRECT_NAME_LENGTH;
         }
 
         AccountEntity account = getAccount(accountName);
         if (account != null && accountName.equals(account.getName())) {
-            return ReceiveRegisterResponse.ACCOUNT_ALREADY_EXISTS;
+            return EResponseRegister.ACCOUNT_ALREADY_EXISTS;
         }
 
         return null;
@@ -198,7 +197,9 @@ public class AccountService {
     }
 
     @EventListener
-    protected void onGameSessionInactive(GameSessionInactive event) {
-        updateOnline(event.getGameSession().getAccount().getId(), false);
+    public void onGameSessionInactive(GameSessionInactive event) {
+        updateOnline(event.getGameSession().getAccount(), false);
+        lobbyService.getObject().updateOnline();
+        lobbyService.getObject().sendPlayerList();
     }
 }

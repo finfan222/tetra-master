@@ -2,11 +2,12 @@ package com.finfan.server.service;
 
 import com.finfan.server.entity.AccountEntity;
 import com.finfan.server.entity.ProfileEntity;
-import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.GameSession;
 import com.finfan.server.network.GameSessionRegistry;
+import com.finfan.server.network.packets.dto.incoming.RequestOnline;
 import com.finfan.server.network.packets.dto.incoming.RequestPlayerInfo;
 import com.finfan.server.network.packets.dto.incoming.RequestPlayerList;
+import com.finfan.server.network.packets.dto.outcoming.ResponseOnline;
 import com.finfan.server.network.packets.dto.outcoming.ResponsePlayerInfo;
 import com.finfan.server.network.packets.dto.outcoming.ResponsePlayerList;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,18 @@ public class LobbyService {
     }
 
     @EventListener
-    public void onRequestPlayerList(RequestPlayerList requestPlayerList) {
+    protected void onRequestPlayerList(RequestPlayerList requestPlayerList) {
         updatePlayerList(requestPlayerList.getListPage());
+    }
+
+    public void sendOnline() {
+        updateOnline();
+    }
+
+    public void updateOnline() {
+        ResponseOnline responseOnline = new ResponseOnline();
+        responseOnline.setPlayerCount(gameSessionRegistry.onlineCount());
+        gameSessionRegistry.multicast(responseOnline);
     }
 
     public void updatePlayerInfo(long playerId, GameSession gameSession) {
@@ -53,12 +64,12 @@ public class LobbyService {
     }
 
     @EventListener
-    public void onUpdatePlayerInfo(RequestPlayerInfo requestPlayerInfo) {
+    protected void onUpdatePlayerInfo(RequestPlayerInfo requestPlayerInfo) {
         updatePlayerInfo(requestPlayerInfo.getPlayerId(), requestPlayerInfo.getGameSession());
     }
 
     @EventListener
-    protected void onGameSessionInactive(GameSessionInactive event) {
-        sendPlayerList();
+    protected void onRequestOnline(RequestOnline event) {
+        updateOnline();
     }
 }

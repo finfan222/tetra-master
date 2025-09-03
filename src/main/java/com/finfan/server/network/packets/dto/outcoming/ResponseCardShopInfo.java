@@ -1,6 +1,5 @@
 package com.finfan.server.network.packets.dto.outcoming;
 
-import com.finfan.server.enums.responses.EResponseLogin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,14 +9,16 @@ import lombok.EqualsAndHashCode;
 @Data
 @Builder
 @AllArgsConstructor
-public class ResponseLogin extends AbstractOutcomePacket {
+public class ResponseCardShopInfo extends AbstractOutcomePacket {
 
-    public static final int PACKET_ID = 0x02;
+    public static final int PACKET_ID = 0x0D;
 
-    private EResponseLogin response;
-    private long id;
+    private long myGil;
+    private boolean cardInStock;
+    private int cardCount;
+    private boolean cardIsUnique;
 
-    public ResponseLogin() {
+    public ResponseCardShopInfo() {
         packetId = PACKET_ID;
     }
 

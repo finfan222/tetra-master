@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -39,7 +40,10 @@ public class GameSessionRegistry {
     }
 
     public int onlineCount() {
-        return gameSessions.size();
+        return gameSessions.keySet().stream()
+                .filter(g -> g.getAccount() != null && Objects.equals(g.getAccount().getOnline(), true))
+                .toList()
+                .size();
     }
 
     public void multicast(AbstractOutcomePacket response) {

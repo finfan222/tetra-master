@@ -28,7 +28,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
             throw new RuntimeException("Десериализатор не найден для: " + packetId);
         }
 
-        log.debug("[←] Income: ID[{}]({}) LEN[{}]", packetId, packetDeserializer.getClass().getSimpleName(), buffer.readableBytes());
+        log.debug("[→] Income: ID[{}]({}) LEN[{}]", packetId, packetDeserializer.getClass().getSimpleName(), buffer.readableBytes());
         out.add(packetDeserializer.deserialize(ctx, buffer));
     }
 

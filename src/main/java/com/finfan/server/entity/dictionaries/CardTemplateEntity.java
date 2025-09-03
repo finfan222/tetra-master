@@ -29,10 +29,14 @@ public class CardTemplateEntity {
     private Integer pDef;
     private Integer mDef;
     private Float rateLvlAtk;
-    private Float rateLvlAtkType;
-    @Column(name = "rate_lvl_pdef")
+    @Column(name = "rate_lvl_atk_type_to_a")
+    private Float rateLvlAtkTypeToA;
+    @Column(name = "rate_lvl_atk_type_to_x")
+    private Float rateLvlAtkTypeToX;
+    @Column(name = "rate_lvl_p_def")
     private Float rateLvlPDef;
-    @Column(name = "rate_lvl_mdef")
+    @Column(name = "rate_lvl_m_def")
     private Float rateLvlMDef;
+
 
 }
