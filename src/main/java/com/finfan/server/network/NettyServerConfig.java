@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NettyServerConfig {
 
+    //@Value("${server.channel-host}")
+    //private String host;
     @Value("${server.channel}")
     private int port;
 

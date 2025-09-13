@@ -162,7 +162,8 @@ CREATE TABLE "public"."cards" (
   "rate_lvl_atk_type_to_a" float4 DEFAULT 0.01,
   "rate_lvl_atk_type_to_x" float4 DEFAULT 0.026,
   "base" bool DEFAULT true,
-  "valuable" int4 DEFAULT 0
+  "valuable" int4 DEFAULT 0,
+  "build" varchar(1) DEFAULT NULL
 )
 ;
 

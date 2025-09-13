@@ -33,6 +33,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
 			<version>3.1.12</version>

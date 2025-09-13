@@ -1,21 +1,21 @@
 package com.finfan.server.network.packets.serder.deserializer;
 
-import com.finfan.server.network.packets.dto.incoming.RequestPlayerInfo;
+import com.finfan.server.network.packets.dto.incoming.RequestPlayerCardList;
 import com.finfan.server.network.packets.serder.PacketDeserializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RequestPlayerInfoDeserializer implements PacketDeserializer {
+public class RequestPlayerCardListDeserializer implements PacketDeserializer {
 
     @Override
-    public RequestPlayerInfo deserialize(ChannelHandlerContext ctx, ByteBuf buffer) {
-        return new RequestPlayerInfo();
+    public RequestPlayerCardList deserialize(ChannelHandlerContext ctx, ByteBuf buffer) {
+        return new RequestPlayerCardList();
     }
 
     @Override
     public int getPacketId() {
-        return RequestPlayerInfo.PACKET_ID;
+        return RequestPlayerCardList.PACKET_ID;
     }
 }

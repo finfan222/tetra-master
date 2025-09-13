@@ -12,7 +12,6 @@ public class RequestChatMessageSendDeserializer implements PacketDeserializer {
     @Override
     public RequestChatMessageSend deserialize(ChannelHandlerContext ctx, ByteBuf buffer) {
         RequestChatMessageSend in = new RequestChatMessageSend();
-        in.setPlayerId(buffer.readLong());
         in.setPlayerMessage(readString(buffer));
         return in;
     }

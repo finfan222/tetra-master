@@ -2,7 +2,6 @@ package com.finfan.server.service;
 
 import com.finfan.server.entity.AccountEntity;
 import com.finfan.server.entity.ProfileEntity;
-import com.finfan.server.network.GameSession;
 import com.finfan.server.network.GameSessionRegistry;
 import com.finfan.server.network.packets.dto.incoming.RequestOnline;
 import com.finfan.server.network.packets.dto.incoming.RequestPlayerInfo;
@@ -47,25 +46,19 @@ public class LobbyService {
         gameSessionRegistry.multicast(responseOnline);
     }
 
-    public void updatePlayerInfo(long playerId, GameSession gameSession) {
-        AccountEntity account = accountService.getAccount(playerId);
-        if (account != null) {
-            ProfileEntity profile = account.getProfile();
-            ResponsePlayerInfo responsePlayerInfo = new ResponsePlayerInfo();
-            responsePlayerInfo.setId(playerId);
-            responsePlayerInfo.setName(account.getName());
-            responsePlayerInfo.setRating(profile.getRating());
-            responsePlayerInfo.setGil(profile.getGil());
-            responsePlayerInfo.setWin(profile.getWins());
-            responsePlayerInfo.setLoss(profile.getLosses());
-            responsePlayerInfo.setPortrait(profile.getPortrait());
-            gameSession.sendPacket(responsePlayerInfo);
-        }
-    }
-
     @EventListener
-    protected void onUpdatePlayerInfo(RequestPlayerInfo requestPlayerInfo) {
-        updatePlayerInfo(requestPlayerInfo.getPlayerId(), requestPlayerInfo.getGameSession());
+    protected void onUpdatePlayerInfo(RequestPlayerInfo event) {
+        AccountEntity account = event.getGameSession().getAccount();
+        ProfileEntity profile = account.getProfile();
+        ResponsePlayerInfo responsePlayerInfo = new ResponsePlayerInfo();
+        responsePlayerInfo.setId(account.getId());
+        responsePlayerInfo.setName(account.getName());
+        responsePlayerInfo.setRating(profile.getRating());
+        responsePlayerInfo.setGil(profile.getGil());
+        responsePlayerInfo.setWin(profile.getWins());
+        responsePlayerInfo.setLoss(profile.getLosses());
+        responsePlayerInfo.setPortrait(profile.getPortrait());
+        event.getGameSession().sendPacket(responsePlayerInfo);
     }
 
     @EventListener

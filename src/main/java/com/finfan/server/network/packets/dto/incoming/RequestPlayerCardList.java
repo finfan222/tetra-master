@@ -5,11 +5,11 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RequestPlayerInfo extends AbstractIncomePacket {
+public class RequestPlayerCardList extends AbstractIncomePacket {
 
-    public static final int PACKET_ID = 0x07;
+    public static final int PACKET_ID = 0x17;
 
-    public RequestPlayerInfo() {
+    public RequestPlayerCardList() {
         packetId = PACKET_ID;
     }
 

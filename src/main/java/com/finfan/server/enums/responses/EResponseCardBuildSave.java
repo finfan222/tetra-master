@@ -1,0 +1,11 @@
+package com.finfan.server.enums.responses;
+
+public enum EResponseCardBuildSave {
+    OK,
+    OK_CLEAR,
+    BUILD_MUST_HAVE_AT_LEAST_5_CARDS,
+    BUILD_CANNOT_CONTAIN_SAME_CARDS,
+    THIS_BUILD_IS_NOT_AVAILABLE
+	//TRY_TO_SET_CARD_WHICH_NOT_BELONG_TO_PLAYER
+	//TRY_TO_SET_MORE_THAN_5_CARDS
+}

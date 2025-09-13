@@ -36,7 +36,7 @@ public class LoginService {
                     responseLogin.setResponse(EResponseLogin.INCORRECT_ACCOUNT_NAME_OR_PASSWORD);
                 } else {
                     if (Objects.equals(account.getOnline(), true)) {
-                        responseLogin.setResponse(EResponseLogin.ALREADY_IN_USE); //TODO: обработать внутри клиента
+                        responseLogin.setResponse(EResponseLogin.ALREADY_IN_USE);
                         log.warn("Попытка зайти на аккаунт {} который уже находится в использовании. Нужен фикс на выбивание клиента?", accountName);
                     } else {
                         responseLogin.setResponse(EResponseLogin.OK);

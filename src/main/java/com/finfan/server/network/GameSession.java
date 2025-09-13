@@ -8,7 +8,6 @@ import com.finfan.server.network.packets.dto.outcoming.AbstractOutcomePacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.ReadTimeoutException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,7 @@ public class GameSession extends SimpleChannelInboundHandler<AbstractIncomePacke
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (cause instanceof ReadTimeoutException) {
-            log.warn(cause.getMessage());
-        }
+        log.error(cause.getMessage());
     }
 
     @Override

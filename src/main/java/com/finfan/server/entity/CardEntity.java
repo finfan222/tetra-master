@@ -2,6 +2,7 @@ package com.finfan.server.entity;
 
 import com.finfan.server.entity.dictionaries.CardTemplateEntity;
 import com.finfan.server.enums.AtkType;
+import com.finfan.server.enums.DeckBuild;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,6 +47,8 @@ public class CardEntity {
     private Float rateLvlMDef;
     private Boolean base;
     private Integer valuable;
+    @Enumerated(EnumType.STRING)
+    private DeckBuild build;
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "card_id", referencedColumnName = "id")

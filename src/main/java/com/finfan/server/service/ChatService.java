@@ -1,8 +1,10 @@
 package com.finfan.server.service;
 
 import com.finfan.server.entity.AccountEntity;
+import com.finfan.server.entity.ProfileEntity;
 import com.finfan.server.enums.ChatMsgColor;
 import com.finfan.server.enums.ChatType;
+import com.finfan.server.enums.Permission;
 import com.finfan.server.network.GameSession;
 import com.finfan.server.network.GameSessionRegistry;
 import com.finfan.server.network.packets.dto.incoming.RequestChatMessageSend;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -36,17 +37,17 @@ public class ChatService {
 
     private final Map<ChatType, List<ChatMessage>> history = new ConcurrentHashMap<>();
 
-    private final AccountService accountService;
     private final GameSessionRegistry gameSessionRegistry;
+    private final ProfileService profileService;
 
     @Value("${game.chat-max-message-length}")
     private int chatMaxMessageLength;
     @Value("${game.chat-max-history-messages}")
     private int chatMaxHistoryMessages;
 
-    public ChatService(AccountService accountService, GameSessionRegistry gameSessionRegistry) {
-        this.accountService = accountService;
+    public ChatService(GameSessionRegistry gameSessionRegistry, ProfileService profileService) {
         this.gameSessionRegistry = gameSessionRegistry;
+        this.profileService = profileService;
     }
 
     @PostConstruct
@@ -68,27 +69,38 @@ public class ChatService {
         }
     }
 
-    private void trySendMessage(GameSession gameSession, String name, String message) {
+    private void sendChatMessage(GameSession gameSession, String name, String message) {
+        // FIXME: сделать систему команд по Account.getPermission()
         ResponseChatMessageSend responseChatMessageSend = new ResponseChatMessageSend();
         responseChatMessageSend.setPlayerName(name);
         responseChatMessageSend.setPlayerMessage(message);
-        responseChatMessageSend.setColor(ChatMsgColor.NORMAL);
-        gameSessionRegistry.multicast(responseChatMessageSend); // TODO: чат для админов делает мультикаст только админам
-        addChatMessage(new ChatMessage(name, message, ChatMsgColor.NORMAL));
+        if (message.startsWith("/gil")) {
+            AccountEntity account = gameSession.getAccount();
+            if (account.getPermission() == Permission.ADMIN) {
+                ProfileEntity profile = account.getProfile();
+                String[] split = message.split(" ");
+                if (split.length == 2) {
+                    String str = split[1];
+                    if (str.length() > 10) {
+                        str = str.substring(0, 10);
+                    }
+                    int gil = Integer.parseInt(str);
+                    profileService.addGil(profile, gil);
+                    log.debug("Добавлено {} гилей для профиля {}!", gil, account.getName());
+                    responseChatMessageSend.setColor(ChatMsgColor.ADMIN);
+                    gameSession.sendPacket(responseChatMessageSend);
+                }
+            }
+        } else {
+            responseChatMessageSend.setColor(ChatMsgColor.NORMAL);
+            gameSessionRegistry.multicast(responseChatMessageSend);
+        }
+        addChatMessage(new ChatMessage(name, message, responseChatMessageSend.getColor()));
     }
 
     @EventListener
     public void onRequestChatMessageSend(RequestChatMessageSend event) {
-        long playerId = event.getPlayerId();
-        AccountEntity account = accountService.getAccount(playerId);
-        AccountEntity senderAccount = event.getGameSession().getAccount();
-        if (!Objects.equals(senderAccount.getId(), account.getId())) {
-            log.warn("Попытка странного хака, аккаунт который использовался для отсылки сообщения в чат не совпадает с аккаунтом, который реально это делал!");
-            log.warn("(!) Аккаунт отправки: {}", senderAccount);
-            log.warn("(!) Аккаунт который получен по ID: {}", account);
-            return;
-        }
-
+        AccountEntity account = event.getGameSession().getAccount();
         String playerMessage = event.getPlayerMessage();
         if (playerMessage.isBlank()) {
             return;
@@ -98,7 +110,7 @@ public class ChatService {
             playerMessage = playerMessage.substring(0, chatMaxMessageLength - 1) + "...";
         }
 
-        trySendMessage(event.getGameSession(), account.getName(), playerMessage);
+        sendChatMessage(event.getGameSession(), account.getName(), playerMessage);
     }
 
 }

@@ -1,6 +1,7 @@
 server:
   port: 8080
   channel: 8000
+  channel-host: 195.166.167.102
 
 spring:
   application.name: "Tetra-Master-Server"

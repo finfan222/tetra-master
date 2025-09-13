@@ -12,6 +12,7 @@ import com.finfan.server.events.network.GameSessionInactive;
 import com.finfan.server.network.packets.dto.incoming.RequestRegister;
 import com.finfan.server.network.packets.dto.outcoming.ResponseRegister;
 import com.finfan.server.repository.AccountRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,6 +76,14 @@ public class AccountService {
     public void updateOnline(AccountEntity account, Boolean value) {
         account.setOnline(value);
         accountRepository.save(account);
+    }
+
+    @PostConstruct
+    @Transactional
+    private void resetOnline() {
+        List<AccountEntity> all = accountRepository.findAll();
+        all.forEach(a -> a.setOnline(false));
+        accountRepository.saveAll(all);
     }
 
     @Transactional
@@ -198,7 +207,10 @@ public class AccountService {
 
     @EventListener
     public void onGameSessionInactive(GameSessionInactive event) {
-        updateOnline(event.getGameSession().getAccount(), false);
+        if (event.getGameSession().getAccount() != null) {
+            updateOnline(event.getGameSession().getAccount(), false);
+        }
+
         lobbyService.getObject().updateOnline();
         lobbyService.getObject().sendPlayerList();
     }

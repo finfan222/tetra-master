@@ -26,13 +26,13 @@ public class GameSessionRegistry {
     @EventListener
     protected void onGameSessionActive(GameSessionActive event) {
         gameSessions.put(event.getGameSession(), VALUE);
-        log.debug("Клиент подключён: {} (total: {})", event.getGameSession().getChannel().id(), onlineCount());
+        log.debug("Клиент подключён: {} (total: {})", event.getGameSession().getChannel().id(), gameSessions.size());
     }
 
     @EventListener
     protected void onGameSessionInactive(GameSessionInactive event) {
         gameSessions.remove(event.getGameSession());
-        log.debug("Клиент отключён: {} (total: {})", event.getGameSession().getChannel().id(), onlineCount());
+        log.debug("Клиент отключён: {} (total: {})", event.getGameSession().getChannel().id(), gameSessions.size());
     }
 
     public List<GameSession> getGameSessions() {

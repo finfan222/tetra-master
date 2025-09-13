@@ -18,7 +18,6 @@ public class RequestChatMessageSend extends AbstractIncomePacket {
 
     public static final int PACKET_ID = 0x09;
 
-    private long playerId;
     private String playerMessage;
 
     public RequestChatMessageSend() {
