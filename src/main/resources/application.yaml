@@ -1,7 +1,7 @@
 server:
   port: 8080
-  channel: 8000
-  channel-host: 195.166.167.102
+  game-port: 8000
+  game-host: 127.0.0.1
 
 spring:
   application.name: "Tetra-Master-Server"
@@ -42,3 +42,15 @@ game:
     #card-price-for-atk-arrows: 100,200,300,500,800,1300,2100,3400
     #card-price-for-atk-type-x: 800
     #card-price-for-atk-type-a: 1800
+  card-duel:
+    add-win-rating: 10
+    add-loss-rating: -10
+    add-draw-rating: 2
+    perfect-multiplier: 1.5
+    comeback-multiplier: 2.5
+    gil-win: 100
+    gil-loss: 0
+    gil-perfect-multiplier: 2.0
+    gil-comeback-multiplier: 3.0
+    finder:
+      max-await-time: 300 # in seconds

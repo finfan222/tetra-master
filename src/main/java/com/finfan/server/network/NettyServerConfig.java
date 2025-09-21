@@ -33,7 +33,7 @@ public class NettyServerConfig {
 
     //@Value("${server.channel-host}")
     //private String host;
-    @Value("${server.channel}")
+    @Value("${server.game-port}")
     private int port;
 
     @Bean

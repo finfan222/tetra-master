@@ -2,14 +2,17 @@ package com.finfan.server.service;
 
 import com.finfan.server.entity.AccountEntity;
 import com.finfan.server.entity.ProfileEntity;
+import com.finfan.server.enums.Rank;
 import com.finfan.server.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -37,7 +40,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public boolean reduceGil(ProfileEntity profile, int count) {
+    public boolean subGil(ProfileEntity profile, int count) {
         Long myGil = profile.getGil();
         if (myGil == null || myGil < count) {
             return false;
@@ -55,5 +58,43 @@ public class ProfileService {
         long result = myGil + count;
         profile.setGil(result);
         save(profile);
+    }
+
+    @Transactional
+    public void subRating(ProfileEntity profile, int sub) {
+        Integer myRating = profile.getRating();
+        if (myRating - sub <= 0) {
+            myRating = 0;
+        }
+
+        int newRating = myRating - sub;
+        profile.setRating(newRating);
+
+        if (Rank.isNextRankReached(profile.getRank(), profile.getRating())) {
+            profile.setRank(profile.getRank().next());
+            log.debug("Ранг профиля {} повышен до {}", profile.getAccount().getName(), profile.getRank());
+        }
+
+        save(profile);
+        log.debug("{} очков рейтинга отнято у {}, общий рейтинг = {}", sub, profile.getAccount().getName(), newRating);
+    }
+
+    @Transactional
+    public void addRating(ProfileEntity profile, int add) {
+        Integer myRating = profile.getRating();
+        if (myRating + add > Short.MAX_VALUE) {
+            myRating = (int) Short.MAX_VALUE;
+        }
+
+        int newRating = myRating + add;
+        profile.setRating(newRating);
+
+        if (Rank.isPreviousRankReached(profile.getRank(), profile.getRating())) {
+            profile.setRank(profile.getRank().previous());
+            log.debug("Ранг профиля {} снижен до {}", profile.getAccount().getName(), profile.getRank());
+        }
+
+        save(profile);
+        log.debug("{} очков рейтинга добавлено для {}, общий рейтинг = {}", add, profile.getAccount().getName(), newRating);
     }
 }

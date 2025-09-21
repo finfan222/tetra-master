@@ -182,6 +182,7 @@ CREATE TABLE "public"."profiles" (
   "talent_id" int8 NOT NULL DEFAULT 1,
   "wins" int4 DEFAULT 0,
   "losses" int4 DEFAULT 0,
+  "draws" int4 DEFAULT 0,
   "rank" varchar(255) COLLATE "pg_catalog"."default" DEFAULT 0,
   "collector_rank" varchar(255) COLLATE "pg_catalog"."default",
   "rating" int4,

@@ -109,6 +109,7 @@ public class AccountService {
         profile.setGil(baseGil);
         profile.setWins(0);
         profile.setLosses(0);
+        profile.setDraws(0);
         profile.setRating(0);
         profile.setRank(Rank.NOVICE);
         profile.setCollectorRank(CollectorRank.BEGINNER);

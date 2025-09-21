@@ -54,9 +54,11 @@ public class LobbyService {
         responsePlayerInfo.setId(account.getId());
         responsePlayerInfo.setName(account.getName());
         responsePlayerInfo.setRating(profile.getRating());
+        responsePlayerInfo.setRank(profile.getRank());
         responsePlayerInfo.setGil(profile.getGil());
         responsePlayerInfo.setWin(profile.getWins());
         responsePlayerInfo.setLoss(profile.getLosses());
+        responsePlayerInfo.setDraw(profile.getDraws());
         responsePlayerInfo.setPortrait(profile.getPortrait());
         event.getGameSession().sendPacket(responsePlayerInfo);
     }

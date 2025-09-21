@@ -145,7 +145,7 @@ public class CardShopService {
             AccountEntity account = event.getGameSession().getAccount();
             ProfileEntity profile = account.getProfile();
             // тратим деньги
-            if (profileService.reduceGil(profile, shopCard.getPrice())) {
+            if (profileService.subGil(profile, shopCard.getPrice())) {
                 newCard = cardService.createCard(profile, shopCard.getTemplate().getId(), shopCard.getAtkArrows());
                 accountService.save(account);
                 responseMessage = EResponseCardShopBuy.OK;

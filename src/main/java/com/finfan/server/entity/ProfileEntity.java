@@ -42,6 +42,7 @@ public class ProfileEntity {
     private Long gil;
     private Integer wins;
     private Integer losses;
+    private Integer draws;
     private Integer rating;
     @Enumerated(EnumType.STRING)
     private Rank rank;
