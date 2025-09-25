@@ -117,7 +117,7 @@ public class DuelFinderService {
     protected void onRequestDuelRegister(RequestDuelRegister event) {
         DuelOpponent duelOpponent = event.getDuelOpponent();
         DuelCategory duelCategory = event.getDuelCategory();
-        long registerTime = event.getRegisterTime();
+        long registerTime = System.currentTimeMillis();
 
         AccountEntity account = event.getGameSession().getAccount();
         ProfileEntity profile = account.getProfile();

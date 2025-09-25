@@ -17,7 +17,6 @@ public class RequestDuelRegister extends AbstractIncomePacket {
 
     private DuelOpponent duelOpponent;
     private DuelCategory duelCategory;
-    private long registerTime;
 
     public RequestDuelRegister() {
         packetId = PACKET_ID;
